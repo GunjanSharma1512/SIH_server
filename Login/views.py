@@ -21,12 +21,14 @@ import base64
 import struct
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
+from geopy.geocoders import Nominatim
 
 
 # Create your views here.
 @csrf_exempt
 @api_view(['GET', 'POST'])
 @permission_classes((permissions.AllowAny,))
+# Checks user registration
 def checkmatch(request):
     if request.method == 'POST':
         id = request.POST.get('email')
@@ -53,6 +55,7 @@ def checkmatch(request):
 
 @api_view(['GET', 'POST'])
 @permission_classes((permissions.AllowAny,))
+#Matching of the hash generated from image with that of the hash provided from the server
 def unhash(request):
     if request.method == 'POST':
         photo=request.POST.get('photo')
@@ -66,7 +69,7 @@ def unhash(request):
 
         data_base64 = photo # ANY STRING IN BASE64 FORMAT
 
-        data_bytes = base64.decodestring(data_base64)  # CONVERTINg THE BASE64 FORMAT TO DATA BYTES
+        data_bytes = base64.decodestring(data_base64)  # CONVERTING THE BASE64 FORMAT TO DATA BYTES
         print(type(data_bytes))
         m = hashlib.md5()
         m.update(data_bytes)
@@ -76,7 +79,21 @@ def unhash(request):
 
     return Response("matched")
 
-
+#Splits the encrypted concatenated string to yield timestamp and coordinate details, further maps the coordinates to the location address.
+def location(request):
+    encrypted = "28.6644636_77.2321377_14_18_27_2_2018"
+    list = encrypted.split("_")
+    print list
+    list.pop(2)
+    list.pop(2)
+    list.pop(2)
+    list.pop(2)
+    list.pop(2)
+    geolocator = Nominatim()
+    location = geolocator.reverse(list)
+    print(location.address)
+    #html = "<html><body>location.address</body></html>" 
+    return HttpResponse("hello")
 
 
 
