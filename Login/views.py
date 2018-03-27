@@ -59,23 +59,22 @@ def unhash(request):
         hashcode=request.POST.get('hashcode')
         encrypted=request.POST.get('encrypted')
 
-
+        image = open("image.jpeg", "wb")
+        image.write(photo.decode('base64'))
+        image.close()
+        print(encrypted)
 
         data_base64 = photo # ANY STRING IN BASE64 FORMAT
-        data_bytes = base64.b64decode(data_base64)  # CONVERTINg THE BASE64 FORMAT TO DATA BYTES
+
+        data_bytes = base64.decodestring(data_base64)  # CONVERTINg THE BASE64 FORMAT TO DATA BYTES
+        print(type(data_bytes))
         m = hashlib.md5()
         m.update(data_bytes)
         a=m.digest()
+        b = (a.encode('base64'))
 
-       # a = md5.new(data_bytes).digest()  # HASH THE DATA BYTES
-        b = (a.encode('base64'))  # ENCODING DATA BYTES TO BASE64
-        print(b)
-        print(hashcode)
-        if b==hashcode:
-            print("same")
-        else:
-            print ("not same")
-    return Response("nouser")
+
+    return Response("matched")
 
 
 
