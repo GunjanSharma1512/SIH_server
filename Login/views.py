@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import decimal
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -25,7 +27,7 @@ import struct
 import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from geopy.geocoders import Nominatim
-
+import os
 
 # Create your views here.
 @csrf_exempt
@@ -64,7 +66,7 @@ def unhash(request):
         hashcode=request.POST.get('hashcode')
         encrypted=request.POST.get('encrypted')
         #caption is added
-        caption=request.POST.get('caption')
+        #caption=request.POST.get('caption')
 
         list = encrypted.split("_")
         print list
@@ -91,9 +93,11 @@ def unhash(request):
 
         address= (location.address)
 
+        # saving the image in jpeg file
 
-        #image.close()
-
+        image = open("image.jpeg", "wb")
+        image.write(photo.decode('base64'))
+        image.close()
         #generate the hash of the image
         hash = hashlib.md5()
         hash.update(open('image.jpeg', 'rb').read())
@@ -102,34 +106,42 @@ def unhash(request):
 
         #saving into database
         user_obj = Image()
+        ##########3
         user_obj.hashcode=hashcode
-        user_obj.caption = caption
+        #user_obj.caption = caption
         user_obj.latitude = lat
         user_obj.longitude = long
         user_obj.date = day
         user_obj.month = month
         user_obj.year = yr
-        #user_obj.pic="image.jpeg"
-
-        # saving the image in jpeg file
-
-        image = open("image.jpeg", "wb")
-        image.write(photo.decode('base64'))
-
-        django_file = File(image)
-        user_obj.pic.save("image.jpeg", django_file, save=True)
-        image.close()
+        user_obj.pic = "image.jpeg"
+        #user_obj.pic.save("image.jpeg", django_file, save=True)
+        #user_obj.pic.save('image.jpeg', File(open('image.jpeg')),save=False)
 
         user_obj.location=address
         user_obj.generated_hash=generated_hash
         user_obj.save(force_insert=True)
+        new_name="image_"+str(user_obj.Uid)+".jpeg"
+        os.rename("image.jpeg",new_name)
 
         #returning the user id of the data user submitted
+        print(user_obj.Uid)
         return Response(user_obj.Uid)
 
 
 
+def less_than_equal(a, b, epsilon=1e-3):
+    return abs(a-b)<=2*epsilon
+
+def greater_than_equal(a, b, epsilon=1e-3):
+    return abs(a-b)>=2*epsilon
+
+
+
 #Matches the constraints specified by davp to validate data
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes((permissions.AllowAny,))
 def constraint_match(request):
     if request.method=='POST':
         mid=request.POST.get('id')
@@ -143,25 +155,35 @@ def constraint_match(request):
             return Response("data not found")
 
         else:
+            print("here1")
             #if hash generated was same as then one user sent
             if user.generated_hash == user.hashcode:
 
                 lat=user.latitude
                 long=user.longitude
                 day=user.date
-                month=user.month
+                month=user.month+1
                 year=user.year
 
+                print("here2")
                 #search through all objects defined by davp database and check if any constraint matches
 
-                for obj in davp_constraint.objects.get():
-                    if lat>=(obj.latitude-0.002) and lat<=(obj.latitude+0.002) and long>=(obj.longitude-0.002) and long<=(obj.longitude+0.002):
-                        if day>=obj.s_date and day<=obj.e_date and month>=obj.s_month and month<=obj.e_month and year>=obj.s_year and year<=obj.e_year:
+                for obj in davp_constraint.objects.all():
+                  #  if less_than_equal(lat, obj.latitude)  and less_than_equal(long, obj.longitude):
+                  if lat>=(obj.latitude-decimal.Decimal(0.002)) and lat<=(obj.latitude+decimal.Decimal(0.002)) and long>=(obj.longitude-decimal.Decimal(0.002)) and long<=(obj.longitude+decimal.Decimal(0.002)):
+                    print("here4")
+                    print(str(day)+" "+str(month)+" "+str(year))
+                    if day >= obj.s_date and day <= obj.e_date and month >= obj.s_month and month <= obj.e_month and year >= obj.s_year and year <= obj.e_year:
+                            print("yes")
                             return Response("matched")
+                   # if lat>=(obj.latitude-0.002) and lat<=(obj.latitude+0.002) and long>=(obj.longitude-0.002) and long<=(obj.longitude+0.002):
+                    #    if day>=obj.s_date and day<=obj.e_date and month>=obj.s_month and month<=obj.e_month and year>=obj.s_year and year<=obj.e_year:
+                     #       return Response("matched")
+                print("here3")
                 return Response("not matched")
             else:
+                print("here4")
                 return Response("not matched")
-
 
 
 

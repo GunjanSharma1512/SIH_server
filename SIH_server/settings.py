@@ -71,7 +71,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'SIH_server.wsgi.application'
-
+MEDIA_ROOT = 'C:\Users\Gunjan\PycharmProjects\SIH_server'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases

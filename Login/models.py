@@ -19,13 +19,13 @@ class User(models.Model):
         )
 
 #model to store the image as sent by the user including all it's details
-
 class Image(models.Model):
     Uid=models.AutoField(primary_key=True)
 
-    caption=  models.CharField(max_length=200)
+    #caption=  models.CharField(max_length=200)
 
     pic = models.ImageField()
+    #pic = models.FileField()
 
     latitude = models.DecimalField(max_digits=1000, decimal_places=40)
     longitude = models.DecimalField(max_digits=1000, decimal_places=40)
@@ -38,10 +38,12 @@ class Image(models.Model):
     generated_hash =models.CharField(max_length=200)
 
 
+
+
+
     def as_json(self):
         return dict(
             caption= self.caption,
-
             date = self.date,
             month = self.month,
             year = self.year,

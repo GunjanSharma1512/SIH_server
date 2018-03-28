@@ -21,6 +21,6 @@ from Login.views import constraint_match
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^unhash/', unhash),
-    url(r'^constrain_match/', constraint_match),
+    url(r'^constraint_match/', constraint_match),
 ]
 
