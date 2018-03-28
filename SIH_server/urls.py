@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from Login.views import unhash
-from Login.views import location
+from Login.views import constraint_match
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^unhash/', unhash),
-    url(r'^location/', location),
+    url(r'^constrain_match/', constraint_match),
 ]
 
