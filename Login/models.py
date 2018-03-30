@@ -24,7 +24,7 @@ class Image(models.Model):
 
     #caption=  models.CharField(max_length=200)
 
-    pic = models.ImageField()
+    pic = models.ImageField(upload_to="images")
     #pic = models.FileField()
 
     latitude = models.DecimalField(max_digits=1000, decimal_places=40)
@@ -58,3 +58,21 @@ class davp_constraint(models.Model):
     e_date = models.IntegerField()
     e_month = models.IntegerField()
     e_year = models.IntegerField()
+
+class register(models.Model):
+    agency = models.CharField(max_length=100)
+    add = models.CharField(max_length= 200)
+    contact= models.IntegerField()
+    email= models.EmailField()
+    pas= models.CharField(max_length = 50)
+
+
+    def __unicode__(self):
+        return self.email
+    def as_json(self):
+        return dict(
+            name=self.agency,
+            email=self.add,
+            contact=self.contact,
+            pas= self.pas
+        )

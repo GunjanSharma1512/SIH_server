@@ -81,6 +81,8 @@ def unhash(request):
         month=list[5]
         yr=list[6]
 
+        hard_location="Jagatpura, Jaipur Municipal Corporation, Jaipur, Rajasthan, 302033, India"
+
         # forming the address and storing it in variable
 
         list.pop(2)
@@ -88,11 +90,13 @@ def unhash(request):
         list.pop(2)
         list.pop(2)
         list.pop(2)
-        geolocator = Nominatim()
-        location = geolocator.reverse(list)
+        try:
+            geolocator = Nominatim()
+            location = geolocator.reverse(list)
 
-        address= (location.address)
-
+            address= (location.address)
+        except:
+            address=hard_location
         # saving the image in jpeg file
 
         image = open("image.jpeg", "wb")
@@ -114,9 +118,9 @@ def unhash(request):
         user_obj.date = day
         user_obj.month = month
         user_obj.year = yr
-        user_obj.pic = "image.jpeg"
+        #user_obj.pic = "image.jpeg"
         #user_obj.pic.save("image.jpeg", django_file, save=True)
-        #user_obj.pic.save('image.jpeg', File(open('image.jpeg')),save=False)
+        user_obj.pic.save('image.jpeg', File(open('image.jpeg')),save=False)
 
         user_obj.location=address
         user_obj.generated_hash=generated_hash
@@ -155,6 +159,8 @@ def constraint_match(request):
             return Response("data not found")
 
         else:
+            ok_response = "matched"
+            not_ok = "not matched"
             print("here1")
             #if hash generated was same as then one user sent
             if user.generated_hash == user.hashcode:
@@ -162,10 +168,11 @@ def constraint_match(request):
                 lat=user.latitude
                 long=user.longitude
                 day=user.date
-                month=user.month+1
+                month=user.month
                 year=user.year
 
                 print("here2")
+
                 #search through all objects defined by davp database and check if any constraint matches
 
                 for obj in davp_constraint.objects.all():
@@ -173,18 +180,53 @@ def constraint_match(request):
                   if lat>=(obj.latitude-decimal.Decimal(0.002)) and lat<=(obj.latitude+decimal.Decimal(0.002)) and long>=(obj.longitude-decimal.Decimal(0.002)) and long<=(obj.longitude+decimal.Decimal(0.002)):
                     print("here4")
                     print(str(day)+" "+str(month)+" "+str(year))
-                    if day >= obj.s_date and day <= obj.e_date and month >= obj.s_month and month <= obj.e_month and year >= obj.s_year and year <= obj.e_year:
+                  #  if day >= obj.s_date and day <= obj.e_date and month >= obj.s_month and month <= obj.e_month and year >= obj.s_year and year <= obj.e_year:
+                    if checkDate(obj.s_date,obj.e_date,obj.s_month,obj.e_month,obj.s_year,obj.e_year,day,month,year):
                             print("yes")
-                            return Response("matched")
+                            return HttpResponse(ok_response)
                    # if lat>=(obj.latitude-0.002) and lat<=(obj.latitude+0.002) and long>=(obj.longitude-0.002) and long<=(obj.longitude+0.002):
                     #    if day>=obj.s_date and day<=obj.e_date and month>=obj.s_month and month<=obj.e_month and year>=obj.s_year and year<=obj.e_year:
                      #       return Response("matched")
                 print("here3")
-                return Response("not matched")
+                return HttpResponse(not_ok)
             else:
                 print("here4")
-                return Response("not matched")
+                return HttpResponse(not_ok)
 
 
+def checkDate(s_date,e_date,s_month,e_month,s_year,e_year,date,month,year):
+    if year>=s_year and year<=e_year:
+        if month>=s_month and month<=e_month:
+            if s_date<=e_date:
+                if s_month==e_month:
+                    if date>=s_date and date<=e_date:
+                        return (True)
+                else:
+                    if (date>=s_date and date<=31) or (date>=1 and date<=e_date):
+                        return True
+            elif s_date>e_date:
+                if (date>=s_date and date<=31) or (date<=e_date and date>=1):
+                    return (True)
+    return False
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes((permissions.AllowAny,))
+def registerit(request):
+    if request.method == 'POST':
+        agency= request.POST.get('agency')
+        add = request.POST.get('add')
+        contact = request.POST.get('contact')
+        email = request.POST.get('email')
+        pas = request.POST.get('pass')
+
+        obj = register()
+        obj.agency = agency
+        obj.add= add
+        obj.contact= contact
+        obj.email= email
+        obj.pas= pas
+        obj.save()
+        return Response("successful")
 
 
