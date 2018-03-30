@@ -10,8 +10,4 @@ admin.site.register(User)
 admin.site.register(Image)
 admin.site.register(davp_constraint)
 from .models import User, Image, davp_constraint, register
-
-admin.site.register(User)
-admin.site.register(Image)
-admin.site.register(davp_constraint)
 admin.site.register(register)
