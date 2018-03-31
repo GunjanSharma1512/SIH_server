@@ -45,9 +45,9 @@ def compare_images(imageA, imageB, title):
 
 # load the images -- the original, the original + contrast,
 # and the original + photoshop
-original = cv2.imread("image_test5.jpeg")
+original = cv2.imread("IMG_TEST6.jpg")
 contrast = cv2.imread("image_24-copy.jpeg")
-shopped = cv2.imread("image_test4.jpeg")
+shopped = cv2.imread("IMG_TEST6_TAMPERED.jpg")
 
 # convert the images to grayscale
 original = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)

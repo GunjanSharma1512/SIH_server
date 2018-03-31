@@ -19,10 +19,10 @@ class User(models.Model):
         )
 
 #model to store the image as sent by the user including all it's details
-class Image(models.Model):
+class Images(models.Model):
     Uid=models.AutoField(primary_key=True)
 
-    #caption=  models.CharField(max_length=200)
+    caption=  models.CharField(max_length=200)
 
     pic = models.ImageField(upload_to="images")
     #pic = models.FileField()
@@ -36,6 +36,8 @@ class Image(models.Model):
     year =models.IntegerField()
     hashcode =models.CharField(max_length=200)
     generated_hash =models.CharField(max_length=200)
+    ocr=models.DecimalField(max_digits=1000, decimal_places=40)
+    mse=models.DecimalField(max_digits=1000, decimal_places=40)
 
 
 
