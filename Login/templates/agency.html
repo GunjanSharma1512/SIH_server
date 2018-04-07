@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#Agencies {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#Agencies td, #Agencies th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#Agencies tr:nth-child(even){background-color: #f2f2f2;}
+
+#Agencies tr:hover {background-color: #ddd;}
+
+#Agencies th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+</style>
+</head>
+<body>
+<h1 align="center"> List of Agencies</h1>
+<table id="Agencies">
+  <tr>
+    <th>Name</th>
+	<th>Agency ID</th>
+    <th>Contact</th>
+    <th>Address</th>
+	<th>Hoarding ID</th>
+    <th>Units</th>
+    <th>Cost estimated per hoarding</th>
+	<th>Size (ft*ft)</th>
+  </tr>
+  <tr>
+    <td><a href="{% url 'flamingo' %}">Flamingo Publications</a></td>
+	<td>OI1231</td>
+    <td>9987123454</td>
+    <td>Jaipur</td>
+	<td>12</td>
+    <td>5</td>
+    <td>100</td>
+    <td>5*5</td>
+  </tr>
+   <tr>
+    <td><a href="{% url 'localhost' %}">LocalHost Advertising</a></td>
+	<td>LA321</td>
+    <td>9817534671</td>
+    <td>Delhi</td>
+	<td>33</td>
+    <td>4</td>
+    <td>500</td>
+	<td>6*6</td>
+  </tr>
+  <tr>
+    <td><a href="{% url 'localhost' %}">Albert Prints</a></td>
+	<td>12A431</td>
+    <td>9817534671</td>
+    <td>Udaipur</td>
+	<td>23</td>
+    <td>2</td>
+    <td>100</td>
+	<td>6*2</td>
+  </tr>
+  
+  <tr>
+    <td><a href="{% url 'localhost' %}">DreamOn Advertising</a></td>
+	<td>DA3521</td>
+    <td>9567534671</td>
+    <td>Maharashtra</td>
+	<td>35</td>
+    <td>6</td>
+    <td>200</td>
+	<td>6*5</td>
+  </tr>
+  <tr>
+    <td><a href="{% url 'localhost' %}">LineIn Advertising</a></td>
+	<td>LI3521</td>
+    <td>7897534671</td>
+    <td>TamilNadu</td>
+	<td>25</td>
+    <td>1</td>
+    <td>100</td>
+	<td>6*4</td>
+  </tr>
+  
+</table>
+
+</body>
+</html>

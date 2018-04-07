@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple click event</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      function initMap() {
+        var myLatlng = {lat: 28.70, lng: 77.10};
+		var delhi1 = { lat: 28.55, lng: 76.22 };
+		var delhi2 = { lat: 28.91, lng: 76.99 };
+		var delhi = { lat: 27.91, lng: 77.78 };
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 8,
+          center: myLatlng
+        });
+
+        var marker = new google.maps.Marker({
+          position: myLatlng,
+          map: map,
+          title: '5 hoardings '+myLatlng['lat']+' '+myLatlng['lng']
+        });
+		var marker2 = new google.maps.Marker({
+          position: delhi1,
+          map: map,
+          title: '3 hoardings '+delhi1['lat']+' '+delhi1['lng']
+        });
+		var marker3 = new google.maps.Marker({
+          position: delhi2,
+          map: map,
+          title: '2 hoardings '+delhi2['lat']+' '+delhi2['lng']
+        });
+		var marker2 = new google.maps.Marker({
+          position: delhi,
+          map: map,
+          title: '8 hoardings '+delhi['lat']+' '+delhi['lng']
+        });
+
+
+
+        map.addListener('center_changed', function() {
+          // 3 seconds after the center of the map has changed, pan back to the
+          // marker.
+          window.setTimeout(function() {
+            map.panTo(marker.getPosition());
+          }, 3000);
+        });
+
+        marker.addListener('click', function() {
+          map.setZoom(8);
+          map.setCenter(marker.getPosition());
+		  infowindow.setContent('<div><strong>' + 45+ '</strong><br>' +
+                'Place ID: ' + 1 + '<br>' +
+                "hello"+ '</div>');
+              infowindow.open(map, this);
+        });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDeDC5r3aVR9onW2Gwbhys_BJSJ4eTDn7I&callback=initMap">
+    </script>
+  </body>
+</html>

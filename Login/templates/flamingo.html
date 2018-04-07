@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#Agencies {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#Agencies td, #Agencies th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#Agencies tr:nth-child(even){background-color: #f2f2f2;}
+
+#Agencies tr:hover {background-color: #ddd;}
+
+#Agencies th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+</style>
+</head>
+<body>
+<h1 align="center"> List of Hoardings</h1>
+<table id="Agencies">
+  <tr>
+    <th>Lease Order number</th>
+    <th>Subject Of Campaign</th>
+    <th>Media or Property</th>
+	 <th>Quantity</th>
+    <th>Place or Location</th>
+    <th>State</th>
+	<th>Period of Display</th>
+  </tr>
+  <tr>
+    <td><a href="{% url 'h1' %}">34567</a></td>
+    <td>Swaccha Bharat</td>
+    <td>Hoarding</td>
+	<td>23</td>
+    <td>India</td>
+    <td>Jaipur</td>
+	<td>30</td>
+  </tr>
+   <tr>
+    <td><a href="{% url 'h2' %}">56789</a></td>
+    <td>Education for all</td>
+    <td>Hoarding</td>
+	<td>10</td>
+    <td>India</td>
+    <td>Delhi</td>
+	<td>20</td>
+  </tr>
+  
+  
+</table>
+
+</body>
+</html>

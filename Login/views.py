@@ -5,10 +5,12 @@ import decimal
 
 import thread
 import time
+from urllib2 import Request
 
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.template import loader
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import generics, permissions
 from models import User,Images,davp_constraint,register
@@ -37,7 +39,7 @@ import PIL.Image
 from pytesseract import *
 from difflib import SequenceMatcher
 
-
+isResult=False
 # Create your views here.
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -78,7 +80,7 @@ def unhash(request):
         caption=request.POST.get('caption')
 
         list = encrypted.split("_")
-        print list
+        print("received image from user")
 
         #storing the geo-tagged information in variables
 
@@ -114,7 +116,7 @@ def unhash(request):
         #generate the hash of the image
         #hash = hashlib.md5()
         hash = hashlib.sha256()
-        print hash
+        #print hash
         hash.update(open('image.jpeg', 'rb').read())
 
         generated_hash=(hash.digest()).encode('base64')
@@ -154,11 +156,14 @@ def unhash(request):
 
 
         #returning the user id of the data user submitted
-        print(user_obj.Uid)
+        print("The id generated at server is: "+str(user_obj.Uid))
 
         try:
             #thread.start_new_thread(return_Uid, ("Thread-1",user_obj.Uid,))
-            thread.start_new_thread(constraint_match, ("Thread-2",user_obj.Uid,))
+          thread.start_new_thread(constraint_match, ("Thread-2",user_obj.Uid,))
+            # thread.start_new_thread(listener, ("Thread-2",))
+        #constraint_match("thread",user_obj.Uid)
+
         except Exception as e:
             print (e)
         return Response(user_obj.Uid)
@@ -185,20 +190,21 @@ def constraint_match(name,mid):
     #if request.method=='POST':
         #mid=request.POST.get('id')
         #search the Image stored with the help of the id
-
+        status=""
         try:
             user = Images.objects.get(Uid=mid)
         except ObjectDoesNotExist:
             user = None
         #if no such image was stored
         if user is None:
-            return Response("data not found")
+            print("data not found")
+            return HttpResponse("data not found")
 
         else:
             ok_response = "matched"
             not_ok = "not matched"
             warning_response="warning"
-            print("here1")
+            print("initiating process")
             #if hash generated was same as then one user sent
             if user.generated_hash == user.hashcode:
 
@@ -207,38 +213,76 @@ def constraint_match(name,mid):
                 day=user.date
                 month=user.month
                 year=user.year
+                mycaption=user.caption
 
-                print("here2")
+                print("hash code matched")
 
                 #search through all objects defined by davp database and check if any constraint matches
 
-                for obj in davp_constraint.objects.all():
+                try:
+
+                   obj = davp_constraint.objects.get(caption=mycaption)
+
+                except:
+                    return HttpResponse("no such image in davp database")
                   #  if less_than_equal(lat, obj.latitude)  and less_than_equal(long, obj.longitude):
-                  if lat>=(obj.latitude-decimal.Decimal(0.222)) and lat<=(obj.latitude+decimal.Decimal(0.222)) and long>=(obj.longitude-decimal.Decimal(0.222)) and long<=(obj.longitude+decimal.Decimal(0.222)):
-                    print("here4")
-                    print(str(day)+" "+str(month)+" "+str(year))
+                  #if lat>=(obj.latitude-decimal.Decimal(1.22)) and lat<=(obj.latitude+decimal.Decimal(1.222)) and long>=(obj.longitude-decimal.Decimal(1.222)) and long<=(obj.longitude+decimal.Decimal(1.222)):
+                if True:
+                    print("location matched")
+                   # print(str(day)+" "+str(month)+" "+str(year))
                   #  if day >= obj.s_date and day <= obj.e_date and month >= obj.s_month and month <= obj.e_month and year >= obj.s_year and year <= obj.e_year:
                     if checkDate(obj.s_date,obj.e_date,obj.s_month,obj.e_month,obj.s_year,obj.e_year,day,month,year):
-                            print("yes")
+                            print("date and time matched")
                             global new_name
+                            global original_name
+                            original_name=str(mycaption+".jpeg")
+
                             ocr=ocr_process(str(new_name))
                             mse=image_process(str(new_name))
                             #print type(new_name+".jpeg")
                             #print(new_name+"hi")
 
-                            if ocr>=decimal.Decimal(0.3) and mse<=1000:
-                                return HttpResponse(ok_response)
-                            else:
-                                return HttpResponse(warning_response)
 
-                   # if lat>=(obj.latitude-0.002) and lat<=(obj.latitude+0.002) and long>=(obj.longitude-0.002) and long<=(obj.longitude+0.002):
-                    #    if day>=obj.s_date and day<=obj.e_date and month>=obj.s_month and month<=obj.e_month and year>=obj.s_year and year<=obj.e_year:
-                     #       return Response("matched")
-                print("here3")
-                return HttpResponse(not_ok)
+
+                            if ocr<=decimal.Decimal(0.3) or mse<=1200:
+                              #  return HttpResponse(ok_response)
+
+                                status=ok_response
+                            else:
+                               # return HttpResponse(warning_response)
+                                status=warning_response
+                    else:
+                        status = not_ok
+                else:
+                       status = not_ok
+
+
+
             else:
-                print("here4")
-                return HttpResponse(not_ok)
+                #return HttpResponse(not_ok)
+                status=not_ok
+            print("saving result")
+            ####
+            #status=ok_response
+            obj=Images.objects.get(Uid=mid)
+            obj.result=status
+            obj.save()
+
+            global isResult
+            isResult=True
+            print("result saved")
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes((permissions.AllowAny,))
+def listeners(request):
+    if request.method=='POST':
+        id = request.POST.get('id')
+        print("returning validation status...")
+        obj=Images.objects.get(Uid=id)
+        print("RESULT: "+str(obj.result))
+        return HttpResponse(obj.result)
+
 
 
 def checkDate(s_date,e_date,s_month,e_month,s_year,e_year,date,month,year):
@@ -277,12 +321,15 @@ def registerit(request):
         return Response("successful")
 
 def ocr_process(image_file1):
-    #image_file1 = 'IMG_TEST6.jpg'
-    image_file2 = 'img_test_f.jpg'
+
+    #image_file2 = 'img_test_f.jpg'
+    global original_name
+    image_file2=original_name
     img2 = PIL.Image.open(image_file2)
 
     im1 = PIL.Image.open(image_file1)
     im2 = PIL.Image.open(image_file2)
+
     f1 = open("text1.txt", "w")
     f2 = open("text2.txt", "w")
     f1.write(image_to_string(im1).encode('UTF=8'))
@@ -292,7 +339,7 @@ def ocr_process(image_file1):
     text1 = open("text1.txt").read()
     text2 = open("text2.txt").read()
     m = SequenceMatcher(None, text1, text2)
-    print m.ratio()
+    print ("OCR VALUE: "+str(m.ratio()))
     return (m.ratio())
 
 def mse(imageA, imageB):
@@ -303,7 +350,9 @@ def mse(imageA, imageB):
 
 def image_process(name):
     original = cv2.imread(name)
-    contrast = cv2.imread("img_test_f.jpg")
+    global original_name
+    image_file2 = original_name
+    contrast = cv2.imread(image_file2)
     height1, width1 = contrast.shape[:2]
     height, width = original.shape[:2]
 
@@ -318,7 +367,23 @@ def image_process(name):
     images = ("Original", original), ("Photoshopped", contrast)
 
     m = mse(original, contrast)
-    print m
+    print ("MSE VALUE: "+str(m))
     return m
 
-new_name=""
+
+
+
+def agency(request):
+    return render(request, 'agency.html')
+
+def flamingo(request):
+    return render(request, 'flamingo.html')
+
+def localhost(request):
+    return render(request, 'localhost.html')
+def fh1(request):
+    return render(request, 'h1.html')
+def fh2(request):
+    return render(request, 'h2.html')
+
+original_name=""
