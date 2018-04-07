@@ -1,27 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c6ec2388-5dbf-4783-aa6c-ad1cd324a4be" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Login/templates/agency.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Login/templates/flamingo.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Login/templates/h1.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Login/templates/h2.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Login/templates/localhost.html" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/image_24-copy.jpeg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/image_24.jpeg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/image_98.jpeg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/image_99.jpeg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img_test_f.jpg" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Login/models.py" afterPath="$PROJECT_DIR$/Login/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Login/views.py" afterPath="$PROJECT_DIR$/Login/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SIH_server/settings.py" afterPath="$PROJECT_DIR$/SIH_server/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SIH_server/urls.py" afterPath="$PROJECT_DIR$/SIH_server/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/image_2.py" afterPath="$PROJECT_DIR$/image_2.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/text1.txt" afterPath="$PROJECT_DIR$/text1.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/text2.txt" afterPath="$PROJECT_DIR$/text2.txt" />
-    </list>
+    <list default="true" id="c6ec2388-5dbf-4783-aa6c-ad1cd324a4be" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
