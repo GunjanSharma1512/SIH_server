@@ -10,8 +10,8 @@ from PIL import Image
 from pytesseract import *
 from difflib import SequenceMatcher
 #Your image file's name goes here
-image_file1 = 'IMG_TEST6.jpg'
-image_file2 = 'IMG_TEST6_TAMPERED.jpg'
+image_file1 = 'hord1.jpg'
+image_file2 = 'blackonwhite.jpg'
 im1 = Image.open(image_file1)
 im2 = Image.open(image_file2)
 f1 = open("text1.txt","w")
@@ -22,5 +22,5 @@ f2.write(image_to_string(im2).encode('UTF=8'))
 f2.close()
 text1 = open("text1.txt").read()
 text2 = open("text2.txt").read()
-m = SequenceMatcher(None, text1, text2)
-print (m.ratio())
+#m = SequenceMatcher(None, text1, text2)
+#print (m.ratio())

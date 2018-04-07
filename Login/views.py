@@ -244,7 +244,7 @@ def constraint_match(name,mid):
 
 
 
-                            if ocr<=decimal.Decimal(0.3) or mse<=1200:
+                            if ocr>=decimal.Decimal(0.3) or mse<=1200:
                               #  return HttpResponse(ok_response)
 
                                 status=ok_response
