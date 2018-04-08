@@ -81,7 +81,7 @@ def unhash(request):
 
         list = encrypted.split("_")
         print("received image from user")
-
+        print(list)
         #storing the geo-tagged information in variables
 
         lat=list[0]
@@ -244,7 +244,8 @@ def constraint_match(name,mid):
 
 
 
-                            if ocr>=decimal.Decimal(0.3) or mse<=1200:
+                            #if ocr>=decimal.Decimal(0.3) or mse<=1200:
+                            if mse<=1200:
                               #  return HttpResponse(ok_response)
 
                                 status=ok_response
